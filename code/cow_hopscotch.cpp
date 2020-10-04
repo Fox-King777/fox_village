@@ -10,16 +10,14 @@ using namespace std;
 const int N = 250010;
 
 class Monoqueue {
- public:
-  int length;
-
  private:
   deque<pair<long, int> > m_deque;  // pair.first: the actual value,
                                     // pair.second: how many elements were deleted between
                                     // it and the one before it.
+  int length_;
 
  public:
-  Monoqueue() { this->length = 0; }
+  Monoqueue() { this->length_ = 0; }
   void push(long val) {
     int count = 0;
     while (!m_deque.empty() && m_deque.back().first < val) {
@@ -27,12 +25,12 @@ class Monoqueue {
       m_deque.pop_back();
     }
     m_deque.push_back(make_pair(val, count));
-    ++this->length;
+    ++this->length_;
   };
 
   long max() { return m_deque.front().first; }
 
-  bool is_empty() { return this->length == 0; }
+  bool empty() { return this->length_ == 0; }
 
   void pop() {
     if (m_deque.front().second > 0) {
@@ -41,10 +39,12 @@ class Monoqueue {
     }
     m_deque.pop_front();
 
-    if (this->length > 0) {
-      --this->length;
+    if (this->length_ > 0) {
+      --this->length_;
     }
   }
+
+  int length() { return this->length_; }
 };
 
 void print_vec(long vec[], int n) {
@@ -80,15 +80,17 @@ long hop_scotch(long val[], int n, int k) {
 
   for (int i = 1; i <= n; ++i) {
     dp[i] = max(dp[i], dp[i - 1] + val[i]);
-    dp[i] = max(dp[i], 0 + val[i] + (i > 1 ? sum[i - 1] - sum[0] : 0));
 
-    if (!queue.is_empty()) {
+    if (!queue.empty()) {
       dp[i] = max(dp[i], queue.max() + val[i] + sum[i - 1]);
     }
-    if (queue.length >= k - 1) {
+    if (queue.length() >= k - 1) {
       queue.pop();
     }
-    if (i > 2) {
+
+    if (i == 1) {
+      queue.push(0);
+    } else {
       queue.push(dp[i - 1] + val[i] - sum[i + 1]);
     }
   }
@@ -113,4 +115,5 @@ int main() {
   }
 
   cout << hop_scotch(val, n, k) << endl;
+  return 0;
 }
