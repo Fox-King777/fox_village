@@ -6,6 +6,8 @@
 #include <queue>
 using namespace std;
 
+// Referenced from
+// https://leetcode.com/problems/sliding-window-maximum/discuss/65885/this-is-a-typical-monotonic-queue-problem
 class Monoqueue {
  private:
   deque<pair<long, int> > m_deque;  // pair.first: the actual value,
@@ -42,6 +44,25 @@ class Monoqueue {
   }
 
   int length() { return this->length_; }
+};
+
+class WindowedMonoqueue {
+ private:
+  int k_;
+  Monoqueue queue;
+
+ public:
+  WindowedMonoqueue(int k) { this->k_ = k; }
+
+  void push(long val) {
+    if (queue.length() >= this->k_) {
+      queue.pop();
+    }
+    queue.push(val);
+  }
+  long max() { return queue.max(); }
+  bool empty() { return queue.empty(); }
+  int length() { return queue.length(); }
 };
 
 vector<int> maxSlidingWindow(vector<int>& nums, int k) {
