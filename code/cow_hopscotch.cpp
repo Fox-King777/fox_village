@@ -1,9 +1,51 @@
 #include <algorithm>
 #include <cmath>
 #include <cstring>
+#include <deque>
 #include <iostream>
 #include <queue>
+#include <utility>
 using namespace std;
+
+const int N = 250010;
+
+class Monoqueue {
+ public:
+  int length;
+
+ private:
+  deque<pair<long, int> > m_deque;  // pair.first: the actual value,
+                                    // pair.second: how many elements were deleted between
+                                    // it and the one before it.
+
+ public:
+  Monoqueue() { this->length = 0; }
+  void push(long val) {
+    int count = 0;
+    while (!m_deque.empty() && m_deque.back().first < val) {
+      count += m_deque.back().second + 1;
+      m_deque.pop_back();
+    }
+    m_deque.push_back(make_pair(val, count));
+    ++this->length;
+  };
+
+  long max() { return m_deque.front().first; }
+
+  bool is_empty() { return this->length == 0; }
+
+  void pop() {
+    if (m_deque.front().second > 0) {
+      m_deque.front().second--;
+      return;
+    }
+    m_deque.pop_front();
+
+    if (this->length > 0) {
+      --this->length;
+    }
+  }
+};
 
 void print_vec(long vec[], int n) {
   long s = 0;
@@ -16,17 +58,11 @@ void print_vec(long vec[], int n) {
   cout << "s=" << s << endl;
 }
 
-int main() {
-  int n, k;
-  cin >> n >> k;
-
-  long val[250010];
-  val[0] = 0;
-  long sum[250010];
+long hop_scotch(long val[], int n, int k) {
+  long sum[N];
   memset(sum, 0, sizeof sum);
 
   for (int i = 1; i <= n; ++i) {
-    cin >> val[i];
     if (val[i] > 0) {
       sum[i] = sum[i - 1] + val[i];
     } else {
@@ -34,31 +70,47 @@ int main() {
     }
   }
 
-  long dp[250010];
+  long dp[N];
   dp[0] = 0;
   for (int i = 1; i <= n; ++i) {
     dp[i] = -10000000000;
   }
 
+  Monoqueue queue;
+
   for (int i = 1; i <= n; ++i) {
-    for (int j = max(0, i - k); j < i; ++j) {
-      if (j + 1 == i) {
-        dp[i] = max(dp[i], dp[j] + val[i]);
-      } else if (j == 0) {
-        dp[i] = max(dp[i], 0 + val[i] + (i > j + 1 ? sum[i - 1] - sum[j] : 0));
-      } else {
-        dp[i] = max(dp[i], dp[j] + val[j + 1] + val[i] + (i > j + 3 ? sum[i - 1] - sum[j + 2] : 0));
-      }
+    dp[i] = max(dp[i], dp[i - 1] + val[i]);
+    dp[i] = max(dp[i], 0 + val[i] + (i > 1 ? sum[i - 1] - sum[0] : 0));
+
+    if (!queue.is_empty()) {
+      dp[i] = max(dp[i], queue.max() + val[i] + sum[i - 1]);
+    }
+    if (queue.length >= k - 1) {
+      queue.pop();
+    }
+    if (i > 2) {
+      queue.push(dp[i - 1] + val[i] - sum[i + 1]);
     }
   }
 
-  int answer = 0;
-
+  long answer = 0;
   for (int i = 0; i <= n; ++i) {
     if (answer < dp[i]) {
       answer = dp[i];
     }
   }
+  return answer;
+}
 
-  cout << answer;
+int main() {
+  int n, k;
+  cin >> n >> k;
+  long val[N];
+  val[0] = 0;
+
+  for (int i = 1; i <= n; ++i) {
+    cin >> val[i];
+  }
+
+  cout << hop_scotch(val, n, k) << endl;
 }
