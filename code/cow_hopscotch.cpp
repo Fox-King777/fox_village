@@ -47,6 +47,25 @@ class Monoqueue {
   int length() { return this->length_; }
 };
 
+class WindowedMonoqueue {
+ private:
+  int k_;
+  Monoqueue queue;
+
+ public:
+  WindowedMonoqueue(int k) { this->k_ = k; }
+
+  void push(long val) {
+    if (queue.length() >= this->k_) {
+      queue.pop();
+    }
+    queue.push(val);
+  }
+  long max() { return queue.max(); }
+  bool empty() { return queue.empty(); }
+  int length() { return queue.length(); }
+};
+
 void print_vec(long vec[], int n) {
   long s = 0;
   for (int i = 0; i < n; ++i) {
@@ -76,16 +95,13 @@ long hop_scotch(long val[], int n, int k) {
     dp[i] = -10000000000;
   }
 
-  Monoqueue queue;
+  WindowedMonoqueue queue(k - 1);
 
   for (int i = 1; i <= n; ++i) {
     dp[i] = max(dp[i], dp[i - 1] + val[i]);
 
     if (!queue.empty()) {
       dp[i] = max(dp[i], queue.max() + val[i] + sum[i - 1]);
-    }
-    if (queue.length() >= k - 1) {
-      queue.pop();
     }
 
     if (i == 1) {
