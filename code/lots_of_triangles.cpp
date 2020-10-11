@@ -55,28 +55,13 @@ int main() {
   for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
       for (int k = j + 1; k < n; ++k) {
-        auto a = trees[i];
-        auto b = trees[j];
-        auto c = trees[k];
         int blue = belows[i][j];
         int red = belows[j][k];
         int black = belows[i][k];
-        int num_trees = 0;
-        if (a.real() == b.real()) {
-          num_trees = red > black ? red - black - 1 : black - red -1;
-        } else if (b.real() == c.real()) {
-          num_trees = blue > black ? blue - black : black - blue;
-        } else if (cross_prod(a - b, b - c) < 0) {
-          num_trees = blue + red - black;
-        } else {
-          num_trees = black - blue - red - 1;
-        }
-        if (num_trees >= 0 && num_trees < n) {
-            ++counts[num_trees];
-        }
-        /*else {
-            cout << a << b << c << num_trees << " " << blue << " " << red << " " << black << endl;
-        }*/
+        int diff = blue - red - black;
+
+        int num_trees = diff >= 0 ? diff : (-diff - 1);
+        ++counts[num_trees];
       }
     }
   }
