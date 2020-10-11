@@ -7,7 +7,7 @@
 using namespace std;
 
 bool complex_cmp(complex<double> a, complex<double> b) {
-  if (real(a) == real(b)) return imag(a) < imag(b);
+  if (real(a) == real(b)) return imag(a) > imag(b);
   return real(a) < real(b);
 }
 
@@ -15,8 +15,8 @@ float cross_prod(complex<float> p0, complex<float> p1) {
   return p0.real() * p1.imag() - p0.imag() * p1.real();
 }
 
-bool below(complex<float> a, complex<float> b, complex<float> tree) {
-  return (a.real() <= tree.real() && b.real() > tree.real() && cross_prod(a - tree, b - a) < 0);
+bool below(complex<float> a, complex<float> b, complex<float> t) {
+  return (a.real() <= t.real() && b.real() > t.real() && cross_prod(b - a, a - t) > 0);
 }
 
 int count_below(complex<float> a, complex<float> b, vector<complex<float>>& trees) {
@@ -63,15 +63,20 @@ int main() {
         int black = belows[i][k];
         int num_trees = 0;
         if (a.real() == b.real()) {
-          num_trees = red - black - 1;
+          num_trees = red > black ? red - black - 1 : black - red -1;
         } else if (b.real() == c.real()) {
-          num_trees = blue - black;
+          num_trees = blue > black ? blue - black : black - blue;
         } else if (cross_prod(a - b, b - c) < 0) {
           num_trees = blue + red - black;
         } else {
           num_trees = black - blue - red - 1;
         }
-        ++counts[num_trees];
+        if (num_trees >= 0 && num_trees < n) {
+            ++counts[num_trees];
+        }
+        /*else {
+            cout << a << b << c << num_trees << " " << blue << " " << red << " " << black << endl;
+        }*/
       }
     }
   }
@@ -89,18 +94,13 @@ int main() {
 
   /*
   4 cases:
-
   1: blue is below green and red. /_\
     below green + below red - below blue = # trees in triangle
-
   2: blue is above grean and red. \-/
     below blue - below red - below green - 1
-
   3. green is vertical
     below red - below blue - 1
-
   4. red is vertical
     below green - blue
-
   */
 }
