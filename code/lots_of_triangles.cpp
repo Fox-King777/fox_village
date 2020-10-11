@@ -58,7 +58,7 @@ int main() {
         int blue = belows[i][j];
         int red = belows[j][k];
         int black = belows[i][k];
-        int diff = blue - red - black;
+        int diff = blue + red - black;
 
         int num_trees = diff >= 0 ? diff : (-diff - 1);
         ++counts[num_trees];
