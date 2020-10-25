@@ -6,23 +6,6 @@
 
 using namespace std;
 
-complex<float> p0;
-
-complex<float> next_to_top(stack<complex<float>> &hull) { 
-    complex<float> p = hull.top();
-    hull.pop();
-    complex<float> result = hull.top();
-    hull.push(p);
-    return result;
-}
-
-void swap(complex<float>& p1, complex<float> p2) {
-    complex<float> temp;
-    temp = p1;
-    p1 = p2;
-    p2 = temp;
-}
-
 int sqr_dis(complex<float> p1, complex<float> p2) {
     return (p1.real() - p2.real()) * (p1.real() - p2.real()) + (p1.imag() - p2.imag()) * (p1.imag() - p2.imag());
 }
@@ -39,29 +22,48 @@ int orientation(complex<float> a, complex<float> b, complex<float> c) {
     return 0;
 }
 
-bool polar_cmp(complex<float> p1, complex<float> p2) { 
-    int ori = orientation(p0, p1, p2); 
-
-    if (ori == 0) {
-        return (sqr_dis(p0, p1) < sqr_dis(p0, p2));
+struct PolarCmp {
+    complex<float> p0;
+    PolarCmp(complex<float> p0) {
+        this->p0 = p0;
     }
 
-    return (ori == -1);
+    bool operator()(complex<float> p1, complex<float> p2) { 
+        int ori = orientation(this->p0, p1, p2); 
+
+        if (ori == 0) {
+            return (sqr_dis(this->p0, p1) < sqr_dis(this->p0, p2));
+        }
+
+        return (ori == -1);
+    }
+};
+
+complex<float> next_to_top(stack<complex<float>> &hull) { 
+    complex<float> p = hull.top();
+    hull.pop();
+    complex<float> result = hull.top();
+    hull.push(p);
+    return result;
 }
 
-void convex_hull(vector<complex<float>> points, int n) { 
-    int ymin = points[0].imag(), min = 0;
-    for (int i = 0; i < n; i++) {
-      int y = points[i].imag();
-      if (y < ymin || (y == ymin && points[i].real() < points[min].real())) {
-        ymin = points[i].imag();
-        min = i;
-      }
+bool point_cmp(complex<float> p1, complex<float> p2) {
+    if (p1.imag() < p2.imag()) {
+        return true;
     }
+    if (p1.imag() == p2.imag()) {
+        return (p1.real() < p2.real());
+    }
+    return false;
+}
 
-    swap(points[0], points[min]);
-    p0 = points[0];
-    sort(points.begin(), points.end(), polar_cmp);
+vector<complex<float>> convex_hull(vector<complex<float>>& points) {
+    int n = points.size();
+    int min_index = min_element(points.begin(), points.end(), point_cmp) - points.begin();
+
+    swap(points[0], points[min_index]);
+    complex<float> p0 = points[0];
+    sort(points.begin(), points.end(), PolarCmp(p0));
 
     int m = 1;
     for (int i = 1; i < n; i++) {
@@ -84,15 +86,18 @@ void convex_hull(vector<complex<float>> points, int n) {
         hull.push(points[i]);
     }
 
-    while(!hull.empty()) {
-      cout << hull.top() << endl;
-      hull.pop();
+    vector<complex<float>> hull_vec;
+    while (!hull.empty()) {
+        hull_vec.push(hull.top());
+        hull.pop();
     }
+
+    return hull_vec;
 }
 
 int main() { 
     vector<complex<float>> points{{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
     int n = 8;
 
-    convex_hull(points, n);
+    convex_hull(points);
 }
