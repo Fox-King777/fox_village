@@ -59,11 +59,8 @@ bool point_cmp(complex<float> p1, complex<float> p2) {
 
 vector<complex<float>> convex_hull(vector<complex<float>> points) {
     int n = points.size();
-    int min_index = min_element(points.begin(), points.end(), point_cmp) - points.begin();
-
-    swap(points[0], points[min_index]);
     complex<float> p0 = points[0];
-    sort(points.begin(), points.end(), PolarCmp(p0));
+    sort(points.begin() + 1, points.end(), PolarCmp(p0));
 
     int m = 1;
     for (int i = 1; i < n; i++) {
@@ -96,8 +93,7 @@ vector<complex<float>> convex_hull(vector<complex<float>> points) {
     return hull_vec;
 }
 
-int count_in_convec_hull(vector<complex<float>>& hull, vector<complex<float>>& points) {
-    sort(points.begin(), points.end(), point_cmp);
+int count_in_convec_hull(vector<complex<float>>& hull, vector<complex<float>> points) {
     int n = hull.size();
 
     int r_edge = 0, l_edge = 0;
@@ -116,18 +112,43 @@ int count_in_convec_hull(vector<complex<float>>& hull, vector<complex<float>>& p
             break;
         }
 
-        if (orientation(p, hull[r_edge], hull[r_edge + 1]) * orientation(p, hull[l_edge], hull[l_edge - 1 + n]) < 0) {
+        if ((orientation(p, hull[r_edge], hull[r_edge + 1]) * 
+             orientation(p, hull[(l_edge + n) % n], hull[l_edge - 1 + n]) <= 0) && 
+            p.imag() >= hull[r_edge].imag()) {
             count++;
         }
-
     }
 
     return count;
 }
 
-int main() { 
-    vector<complex<float>> points{{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
+int main() {
+    int n;
+    cin >> n;
 
-    auto hull = convex_hull(points);
-    cout << count_in_convec_hull(hull, points) << endl;
+    vector<complex<float>> red_points;
+    for (int i = 0; i < n; i++) {
+        int x, y;
+        cin >> x >> y;
+
+        red_points.emplace_back(x, y);
+    }
+
+    vector<complex<float>> blue_points;
+    for (int i = 0; i < n; i++) {
+        int x, y;
+        cin >> x >> y;
+
+        blue_points.emplace_back(x, y);
+    }
+    sort(red_points.begin(), red_points.end(), point_cmp);
+    sort(blue_points.begin(), blue_points.end(), point_cmp);
+
+    auto red_hull = convex_hull(red_points);
+    int red_score = count_in_convec_hull(red_hull, blue_points);
+
+    auto blue_hull = convex_hull(blue_points);
+    int blue_score = count_in_convec_hull(blue_hull, red_points);
+
+    cout << red_score << " " << blue_score << endl;
 }
