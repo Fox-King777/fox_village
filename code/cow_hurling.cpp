@@ -57,7 +57,7 @@ bool point_cmp(complex<float> p1, complex<float> p2) {
     return false;
 }
 
-vector<complex<float>> convex_hull(vector<complex<float>>& points) {
+vector<complex<float>> convex_hull(vector<complex<float>> points) {
     int n = points.size();
     int min_index = min_element(points.begin(), points.end(), point_cmp) - points.begin();
 
@@ -96,11 +96,38 @@ vector<complex<float>> convex_hull(vector<complex<float>>& points) {
     return hull_vec;
 }
 
+int count_in_convec_hull(vector<complex<float>>& hull, vector<complex<float>>& points) {
+    sort(points.begin(), points.end(), point_cmp);
+    int n = hull.size();
+
+    int r_edge = 0, l_edge = 0;
+    int count = 0;
+
+    for (auto p : points) {
+        while (r_edge + 1 < n && p.imag() > hull[r_edge + 1].imag()) {
+            r_edge++;
+        }
+
+        while (l_edge - 1 + n >= 0 && p.imag() > hull[l_edge - 1 + n].imag()) {
+            l_edge--;
+        }
+
+        if (r_edge + 1 >= n || l_edge - 1 + n < 0) {
+            break;
+        }
+
+        if (orientation(p, hull[r_edge], hull[r_edge + 1]) * orientation(p, hull[l_edge], hull[l_edge - 1 + n]) < 0) {
+            count++;
+        }
+
+    }
+
+    return count;
+}
+
 int main() { 
     vector<complex<float>> points{{0, 3}, {1, 1}, {2, 2}, {4, 4}, {0, 0}, {1, 2}, {3, 1}, {3, 3}};
 
     auto hull = convex_hull(points);
-    for (auto point : hull) {
-        cout << point << endl;
-    }
+    cout << count_in_convec_hull(hull, points) << endl;
 }
