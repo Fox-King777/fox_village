@@ -3,6 +3,7 @@
 #include <stack>
 #include <algorithm>
 #include <vector>
+#include <fstream>
 
 using namespace std;
 
@@ -14,7 +15,7 @@ int sqr_dis(complex<float> p1, complex<float> p2) {
 // 1 --> Clockwise
 // -1 --> Counterclockwise
 int orientation(complex<float> a, complex<float> b, complex<float> c) {
-    int area = (b.real() - a.real()) * (c.imag() - a.imag()) - (b.imag() - a.imag()) * (c.real() - a.real());
+    double area = (b.real() - a.real()) * (c.imag() - a.imag()) - (b.imag() - a.imag()) * (c.real() - a.real());
     if (area > 0)
         return -1;
     else if (area < 0)
@@ -124,12 +125,13 @@ int count_in_convec_hull(vector<complex<float>>& hull, vector<complex<float>> po
 
 int main() {
     int n;
-    cin >> n;
+    ifstream fin("data/cow_curling_data.txt", ifstream::in);
+    fin >> n;
 
     vector<complex<float>> red_points;
     for (int i = 0; i < n; i++) {
         int x, y;
-        cin >> x >> y;
+        fin >> x >> y;
 
         red_points.emplace_back(x, y);
     }
@@ -137,7 +139,7 @@ int main() {
     vector<complex<float>> blue_points;
     for (int i = 0; i < n; i++) {
         int x, y;
-        cin >> x >> y;
+        fin >> x >> y;
 
         blue_points.emplace_back(x, y);
     }
