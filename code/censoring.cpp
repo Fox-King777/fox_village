@@ -3,6 +3,7 @@
 #include <utility>
 #include <string>
 #include <cstring>
+#include <stack>
 
 using namespace std;
 
@@ -29,30 +30,48 @@ vector<int> cmp_lps(char pat[], int m) {
     return lps;
 }
 
-int kmp(char pat[], char str[], int m, int n) {
-    vector<int> lps = cmp_lps(pat, m);
+string stack_to_str(stack<pair<char, int>>& stack) {
+  string ret;
+  int n = stack.size();
+  ret.resize(stack.size(), ' ');
+  int k = 0;
+  while (not stack.empty()) {
+    ret[n - k - 1] = stack.top().first;
+    ++k;
+    stack.pop();
+  }
+  return ret;
+}
 
-  int i = 0, j = 0; // i length of match, j scanning through str
+string censor(char pat[], char str[], int m, int n) {
+  vector<int> lps = cmp_lps(pat, m);
+  stack<pair<char,int>> stack;
 
-  while(j < n) {
+  int i = 0, j = -1; // i length of match, j scanning through str
+
+  while(j + 1 < n) {
     if (str[j + 1] == pat[i]) {
-        j++;
-        i++;
+        stack.push(make_pair(str[++j], ++i));
     } else {
         if (i != 0) {
             i = lps[i];
         } else {
-          j++;
+          stack.push(make_pair(str[++j], 0));
         }
     }
 
     if (i == m) {
-      return j - (i - 1);
+      for (int k = 0; k < m; ++k) {
+        stack.pop();
+      }
+
+      i = stack.empty() ? 0 : stack.top().second;
     }
   }
 
-  return -1;
+  return stack_to_str(stack);
 }
+
 
 int main() { 
     string txt = "whatthemomooofun", w = "moo";
@@ -64,15 +83,5 @@ int main() {
     char pat[m];
     strcpy(pat, w.c_str());
 
-    while(true) {
-      int ans = kmp(pat, str, m, n);
-      if (ans == -1) {
-        break;
-      }
-      txt.erase(ans, m);
-      strcpy(str, txt.c_str());
-      n = txt.length();
-    }
-
-    cout << txt;
+    cout << censor(pat, str, m, n);
 }
