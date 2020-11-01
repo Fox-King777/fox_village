@@ -47,16 +47,16 @@ string censor(char pat[], char str[], int m, int n) {
   vector<int> lps = cmp_lps(pat, m);
   stack<pair<char,int>> stack;
 
-  int i = 0, j = -1; // i length of match, j scanning through str
+  int i = 0, j = 0;  // i length of match, j scanning through str
 
-  while(j + 1 < n) {
-    if (str[j + 1] == pat[i]) {
-        stack.push(make_pair(str[++j], ++i));
+  while(j < n) {
+    if (str[j] == pat[i]) {
+        stack.push(make_pair(str[j++], ++i));
     } else {
         if (i != 0) {
-            i = lps[i];
+            i = lps[i - 1];
         } else {
-          stack.push(make_pair(str[++j], 0));
+          stack.push(make_pair(str[j++], 0));
         }
     }
 
@@ -74,7 +74,7 @@ string censor(char pat[], char str[], int m, int n) {
 
 
 int main() { 
-    string txt = "whatthemomooofun", w = "moo";
+    string txt = "hhehhhehhhehhhehhhehhehehhehhehhhhhehhhehhhehhhehhhhehhhehhehhhehhhhhehhhehhhehhhehhhehhehehhehehhhehhhehhehehhhhehhhehhhehhhehhhehhehehhehehhhhehhhehhhehhehehhehhehhehehhhehhhehhhehhhehhhehhehehhehhehehhehhhehhhhhehhhehhhhhehhhehhhehhhehhhehhehehhehehhhehhhhehhhehhhehhheehhehhehehhehhehhehehhehhhehhhehhhehhhhehhhehhhehhhehhhehhehehhehhehhhehhehehhehehhhehhhehhehhhehhhehhhehhhehhhehhehehhehhhehhhhhehhhehhhehhhehhhehhhehhehehhehhhehhhehhhehhhehhehehhehehhhehhhehhehehhehhhehehhehhhhehhhehhhehheheh", w = "hhehhhehhhehhhehhhehhehehheh";
     int n = txt.length(), m = w.length();
 
     char str[n];
@@ -82,6 +82,7 @@ int main() {
 
     char pat[m];
     strcpy(pat, w.c_str());
+    vector<int> lps = cmp_lps(pat, m);
 
     cout << censor(pat, str, m, n);
 }
