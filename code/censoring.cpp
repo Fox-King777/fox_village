@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <stack>
+#include <fstream>
 
 using namespace std;
 
@@ -74,15 +75,16 @@ string censor(char pat[], char str[], int m, int n) {
 
 
 int main() { 
-    string txt = "hhehhhehhhehhhehhhehhehehhehhehhhhhehhhehhhehhhehhhhehhhehhehhhehhhhhehhhehhhehhhehhhehhehehhehehhhehhhehhehehhhhehhhehhhehhhehhhehhehehhehehhhhehhhehhhehhehehhehhehhehehhhehhhehhhehhhehhhehhehehhehhehehhehhhehhhhhehhhehhhhhehhhehhhehhhehhhehhehehhehehhhehhhhehhhehhhehhheehhehhehehhehhehhehehhehhhehhhehhhehhhhehhhehhhehhhehhhehhehehhehhehhhehhehehhehehhhehhhehhehhhehhhehhhehhhehhhehhehehhehhhehhhhhehhhehhhehhhehhhehhhehhehehhehhhehhhehhhehhhehhehehhehehhhehhhehhehehhehhhehehhehhhhehhhehhhehheheh", w = "hhehhhehhhehhhehhhehhehehheh";
-    int n = txt.length(), m = w.length();
+    string txt, w;
+    ifstream fin("data/censoring_15.in", ifstream::in);
+    fin >> txt >> w;
 
-    char str[n];
+    int n = txt.length(), m = w.length();
+    char str[n+1];
     strcpy(str, txt.c_str());
 
-    char pat[m];
+    char pat[m+1];
     strcpy(pat, w.c_str());
-    vector<int> lps = cmp_lps(pat, m);
 
     cout << censor(pat, str, m, n);
 }
