@@ -28,9 +28,9 @@ bool is_disjoint(interval a, interval b) { return a.second <= b.first || b.secon
 bool contains(interval a, interval b) { return a.first <= b.first and a.second >= b.second; }
 
 struct Node {
-  int sum;
-  int min;
-  int lazy;
+  long sum;
+  long min;
+  long lazy;
   interval itv;
 };
 
@@ -39,11 +39,11 @@ string node_repr(const Node& node) {
   if (len(node.itv) == 0) {
     return string("dummy");
   }
-  sprintf(buf, "(sum: %d, min: %d, lazy: %d, itv: %s)", node.sum, node.min, node.lazy, repr(node.itv).c_str());
+  sprintf(buf, "(sum: %ld, min: %ld, lazy: %ld, itv: %s)", node.sum, node.min, node.lazy, repr(node.itv).c_str());
   return string(buf);
 }
 
-void build(vector<Node> & t, int arr[], int i, interval itv) {
+void build(vector<Node> & t, long arr[], int i, interval itv) {
     t[i].itv = itv;
     if (len(itv) == 1) {
       t[i].sum = arr[itv.first];
@@ -61,7 +61,7 @@ void build(vector<Node> & t, int arr[], int i, interval itv) {
     }
 }
 
-int range_sum(vector<Node>& t, int i, interval qitv, int lazy_sum) {
+long range_sum(vector<Node>& t, int i, interval qitv, long lazy_sum) {
     if (contains(qitv, t[i].itv)) {
       return t[i].sum + lazy_sum * len(t[i].itv);
     } else if (is_disjoint(qitv, t[i].itv)) {
@@ -72,7 +72,7 @@ int range_sum(vector<Node>& t, int i, interval qitv, int lazy_sum) {
     }
 }
 
-int range_min(vector<Node>& t, int i, interval qitv, int lazy_sum) {
+long range_min(vector<Node>& t, int i, interval qitv, long lazy_sum) {
   if (contains(qitv, t[i].itv)) {
     return t[i].min + lazy_sum;
     } else if (is_disjoint(qitv, t[i].itv)) {
@@ -83,7 +83,7 @@ int range_min(vector<Node>& t, int i, interval qitv, int lazy_sum) {
     }
 }
 
-void range_update(vector<Node>& t, int i, interval qitv, int value) {
+void range_update(vector<Node>& t, int i, interval qitv, long value) {
     if (contains(qitv, t[i].itv)) {
       t[i].lazy += value;
       t[i].sum += len(t[i].itv) * value;
@@ -105,30 +105,30 @@ void print_tree(const vector<Node>& t) {
 }
 
 int main() {
-    ifstream fin("data/counting_haybales/2.in", ifstream::in);
+    ifstream fin("data/counting_haybales/4.in", ifstream::in);
     int n;
     int q;
     fin >> n >> q;
-    int arr[n];
+    long arr[n];
     for (int i = 0; i < n; i++) {
       fin >> arr[i];
     }
 
-    vector<Node> t(n * 2 + 1);
+    vector<Node> t(4 * n);
     build(t, arr, 0, interval(0, n));
   for (int i = 0; i < q; i++) {
     char letter;
     fin >> letter;
     if (letter == 'M') {
-      int a, b;
+      long a, b;
       fin >> a >> b;
       cout << range_min(t, 0, interval(a - 1, b), 0) << endl;
     } else if (letter == 'S') {
-      int a, b;
+      long a, b;
       fin >> a >> b;
       cout << range_sum(t, 0, interval(a - 1, b), 0) << endl;
     } else {
-      int a, b, value;
+      long a, b, value;
       fin >> a >> b >> value;
       range_update(t, 0, interval(a - 1, b), value);
     }
