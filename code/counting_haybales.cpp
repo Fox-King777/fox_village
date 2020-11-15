@@ -93,8 +93,8 @@ void range_update(vector<Node>& t, int i, interval qitv, int value) {
     } else {
       range_update(t, i * 2 + 1, qitv, value);
       range_update(t, i * 2 + 2, qitv, value);
-      t[i].sum = t[i * 2 + 1].sum + t[i * 2 + 2].sum;
-      t[i].min = min(t[i * 2 + 1].min, t[i * 2 + 2].min);
+      t[i].sum = t[i * 2 + 1].sum + t[i * 2 + 2].sum + len(t[i].itv) * t[i].lazy;
+      t[i].min = min(t[i * 2 + 1].min, t[i * 2 + 2].min) + t[i].lazy;
     }
 }
 
@@ -105,7 +105,7 @@ void print_tree(const vector<Node>& t) {
 }
 
 int main() {
-    ifstream fin("data/count_haybales.txt", ifstream::in);
+    ifstream fin("data/counting_haybales/2.in", ifstream::in);
     int n;
     int q;
     fin >> n >> q;
