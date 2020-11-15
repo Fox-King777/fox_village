@@ -76,7 +76,7 @@ string censor(char pat[], char str[], int m, int n) {
 
 int main() { 
     string txt, w;
-    ifstream fin("data/censoring/15.in", ifstream::in);
+    ifstream fin("testdata/censoring/15.in", ifstream::in);
     fin >> txt >> w;
 
     int n = txt.length(), m = w.length();

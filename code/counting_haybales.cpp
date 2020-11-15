@@ -105,7 +105,7 @@ void print_tree(const vector<Node>& t) {
 }
 
 int main() {
-    ifstream fin("data/counting_haybales/4.in", ifstream::in);
+    ifstream fin("testdata/counting_haybales/4.in", ifstream::in);
     int n;
     int q;
     fin >> n >> q;
