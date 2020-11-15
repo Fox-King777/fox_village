@@ -125,7 +125,7 @@ int count_in_convec_hull(vector<complex<float>>& hull, vector<complex<float>> po
 
 int main() {
     int n;
-    ifstream fin("data/cow_curling/cow_curling_data.txt", ifstream::in);
+    ifstream fin("testdata/cow_curling/cow_curling_data.txt", ifstream::in);
     fin >> n;
 
     vector<complex<float>> red_points;
