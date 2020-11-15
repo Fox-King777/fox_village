@@ -62,23 +62,23 @@ void build(vector<Node> & t, int arr[], int i, interval itv) {
 }
 
 int range_sum(vector<Node>& t, int i, interval qitv, int lazy_sum) {
-  lazy_sum += t[i].lazy;
     if (contains(qitv, t[i].itv)) {
       return t[i].sum + lazy_sum * len(t[i].itv);
     } else if (is_disjoint(qitv, t[i].itv)) {
       return 0;
     } else {
+      lazy_sum += t[i].lazy;
       return range_sum(t, i * 2 + 1, qitv, lazy_sum) + range_sum(t, i * 2 + 2, qitv, lazy_sum);
     }
 }
 
 int range_min(vector<Node>& t, int i, interval qitv, int lazy_sum) {
-  lazy_sum += t[i].lazy;
   if (contains(qitv, t[i].itv)) {
     return t[i].min + lazy_sum;
     } else if (is_disjoint(qitv, t[i].itv)) {
       return numeric_limits<int>::max();
     } else {
+      lazy_sum += t[i].lazy;
       return min(range_min(t, i * 2 + 1, qitv, lazy_sum), range_min(t, i * 2 + 2, qitv, lazy_sum));
     }
 }
@@ -86,12 +86,22 @@ int range_min(vector<Node>& t, int i, interval qitv, int lazy_sum) {
 void range_update(vector<Node>& t, int i, interval qitv, int value) {
     if (contains(qitv, t[i].itv)) {
       t[i].lazy += value;
+      t[i].sum += len(t[i].itv) * value;
+      t[i].min += value;
     } else if (is_disjoint(qitv, t[i].itv)) {
       return;
     } else {
       range_update(t, i * 2 + 1, qitv, value);
       range_update(t, i * 2 + 2, qitv, value);
+      t[i].sum = t[i * 2 + 1].sum + t[i * 2 + 2].sum;
+      t[i].min = min(t[i * 2 + 1].min, t[i * 2 + 2].min);
     }
+}
+
+void print_tree(const vector<Node>& t) {
+  for (int j = 0; j < t.size(); ++j) {
+        cout << j << ": " << node_repr(t[j]) << endl;
+  }
 }
 
 int main() {
@@ -121,9 +131,6 @@ int main() {
       int a, b, value;
       fin >> a >> b >> value;
       range_update(t, 0, interval(a - 1, b), value);
-      for (int j = 0; j < t.size(); ++j) {
-        cout << j << ": " << node_repr(t[j]) << endl;
-      }
     }
   }
 }
