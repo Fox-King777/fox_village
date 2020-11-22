@@ -77,8 +77,6 @@ int main() {
     int part_1 =
         sum_laps_tree.range_sum(l + 1, L + 1) - (l + 1) * num_cows_tree.range_sum(l + 1, L + 1);
     sum += part_0 + part_1;
-    cout << i << ": l: " << l << " frac: " << cows_end[i].frac << " sum: " << sum << " " << part_0
-         << " " << part_1 << endl;
     num_cows_tree.add(l, 1);
     sum_laps_tree.add(l, l);
   }
