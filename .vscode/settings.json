@@ -2,6 +2,6 @@
     "C_Cpp.default.cppStandard": "c++17",
     "editor.formatOnSave": true,
     "[cpp]": {
-        "editor.tabSize": 4,
+        "editor.tabSize": 2,
     },
 }
