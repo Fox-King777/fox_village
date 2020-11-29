@@ -39,5 +39,10 @@ int main() {
     }
   }
 
-  cout << ans;
+  for (int i = 0; i < ans.length(); ++i) {
+    if (i % 80 == 0 && i != 0) {
+      cout << endl;
+    }
+    cout << ans[i];
+  }
 }

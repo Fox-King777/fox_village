@@ -4,4 +4,8 @@
     "[cpp]": {
         "editor.tabSize": 2,
     },
+    "files.associations": {
+        "iostream": "cpp",
+        "iosfwd": "cpp"
+    },
 }
