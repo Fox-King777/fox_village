@@ -31,7 +31,7 @@ void remove_supercedes(vector<interval>& cows) {
 
 string repr(interval itv) {
   char buf[100];
-  sprintf(buf, "[%d, %d]", itv.first, itv.second);
+  sprintf(buf, "[%d, %d], %d", itv.first, itv.second, itv.second-itv.first);
   return string(buf);
 }
 
@@ -42,7 +42,7 @@ void print_array(int arr[], int n) {
 }
 
 int main() {
-  ifstream fin("testdata/lifeguards/2.in", ifstream::in);
+  ifstream fin("testdata/lifeguards/jiang_test_case.in", ifstream::in);
   int n, k;
   fin >> n >> k;
 
@@ -89,7 +89,4 @@ int main() {
   }
 
   cout << dp[cows.size()][k] << endl;
-  for (int i = 0; i < k; ++i) {
-    cout << dp[cows.size()][i] << endl;
-  }
 }
