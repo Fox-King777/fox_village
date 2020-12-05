@@ -8,7 +8,6 @@ using namespace std;
 using interval = pair<int, int>;
 
 bool is_disjoint(interval a, interval b) { return a.second < b.first || b.second < a.first; }
-bool contains(interval a, interval b) { return a.first <= b.first and a.second >= b.second; }
 
 bool cows_cmp(interval a, interval b) {
   if (a.first != b.first) {
@@ -74,10 +73,6 @@ int main() {
     for (int r = 0; r <= k; ++r) {
       // case 0
       dp[i][r] = dp[i - 1][max(0, r - 1)];
-      // case 1
-      if (r <= i - 1) {
-        dp[i][r] = max(dp[i][r], cows[i - 1].second - cows[i - 1].first);
-      }
       // case 2
       if (i > j) {
         int r0 = max(0, r - (i - j - 1));
@@ -94,4 +89,7 @@ int main() {
   }
 
   cout << dp[cows.size()][k] << endl;
+  for (int i = 0; i < k; ++i) {
+    cout << dp[cows.size()][i] << endl;
+  }
 }
