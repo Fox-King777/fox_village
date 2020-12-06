@@ -31,7 +31,7 @@ void remove_supercedes(vector<interval>& cows) {
 
 string repr(interval itv) {
   char buf[100];
-  sprintf(buf, "[%d, %d], %d", itv.first, itv.second, itv.second-itv.first);
+  sprintf(buf, "[%d, %d], %d", itv.first, itv.second, itv.second - itv.first);
   return string(buf);
 }
 
@@ -42,7 +42,7 @@ void print_array(int arr[], int n) {
 }
 
 int main() {
-  ifstream fin("testdata/lifeguards/jiang_test_case2.in", ifstream::in);
+  ifstream fin("testdata/lifeguards/3.in", ifstream::in);
   int n, k;
   fin >> n >> k;
 
@@ -58,12 +58,8 @@ int main() {
 
   k -= (n - cows.size());
 
-  int dp[cows.size() + 1][k + 1];
-  for (int i = 0; i <= cows.size(); i++) {
-    for (int j = 0; j <= k; j++) {
-      dp[i][j] = 0;
-    }
-  }
+  vector<vector<int>> dp(cows.size() + 1, vector<int>(k + 1, 0));
+  vector<vector<int>> dp2(cows.size() + 1, vector<int>(k + 1, 0));
 
   int j = 1;
   for (int i = 1; i <= cows.size(); ++i) {
@@ -71,22 +67,27 @@ int main() {
       j++;
     }
     for (int r = 0; r <= k; ++r) {
-      // case 0
-      dp[i][r] = dp[i - 1][max(0, r - 1)];
+      // case 1
+      if (i - 1 >= r) {
+        dp[i][r] = cows[i - 1].second - cows[i - 1].first;
+      }
       // case 2
       if (i > j) {
         int r0 = max(0, r - (i - j - 1));
-        if (j - 1 >= r0) {
-          dp[i][r] = max(dp[i][r], dp[j - 1][r0] + cows[i - 1].second - cows[j - 1].first);
+        if (j > r0) {
+          dp[i][r] = max(dp[i][r], dp[j][r0] + cows[i - 1].second - cows[j - 1].second);
         }
       }
       // case 3
       int r0 = max(0, r - (i - j));
-      if (j - 1 >= r0) {
-        dp[i][r] = max(dp[i][r], dp[j - 1][r0] + cows[i - 1].second - cows[i - 1].first);
+      if (j - 1 > r0) {
+        dp[i][r] = max(dp[i][r], dp2[j - 1][r0] + cows[i - 1].second - cows[i - 1].first);
       }
+
+      // Update dp2.
+      dp2[i][r] = max(dp[i][r], r > 0 ? dp2[i - 1][r - 1] : 0);
     }
   }
 
-  cout << dp[cows.size()][k] << endl;
+  cout << dp2[cows.size()][k] << endl;
 }
