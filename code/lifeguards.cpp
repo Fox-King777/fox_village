@@ -42,7 +42,7 @@ void print_array(int arr[], int n) {
 }
 
 int main() {
-  ifstream fin("testdata/lifeguards/jiang_test_case.in", ifstream::in);
+  ifstream fin("testdata/lifeguards/jiang_test_case2.in", ifstream::in);
   int n, k;
   fin >> n >> k;
 
