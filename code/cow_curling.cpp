@@ -153,5 +153,6 @@ int main() {
   auto blue_hull = convex_hull(blue_points);
   int blue_score = count_in_convec_hull(blue_hull, red_points);
 
+  // pass
   cout << red_score << " " << blue_score << endl;
 }

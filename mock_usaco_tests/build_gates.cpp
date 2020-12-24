@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include <algorithm>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -58,9 +59,26 @@ int main() {
   string directions;
   fin >> directions;
 
-  vector<vector<bool>> is_fence(4 * n + 1, vector<bool>(4 * n + 1, false));
+  int maxc = 0, maxr = 0;
+  for (int i = 0; i < n; i++) {
+    if (directions[i] == 'N') {
+      maxr++;
+    }
+    if (directions[i] == 'S') {
+      maxr--;
+    }
+    if (directions[i] == 'E') {
+      maxc++;
+    }
+    if (directions[i] == 'W') {
+      maxc--;
+    }
+  }
+  int m = max(abs(maxc), abs(maxr));
 
-  int r = 2 * n, c = 2 * n;
+  vector<vector<bool>> is_fence(4 * m + 1, vector<bool>(4 * m + 1, false));
+
+  int r = 2 * m, c = 2 * m;
   is_fence[r][c] = true;
   for (int i = 0; i < n; ++i) {
     if (directions[i] == 'N') {
@@ -83,10 +101,10 @@ int main() {
   }
 
   int ans = 0;
-  for (int i = 0; i < 4 * n + 1; ++i) {
-    for (int j = 0; j < 4 * n + 1; ++j) {
+  for (int i = 0; i < 4 * m + 1; ++i) {
+    for (int j = 0; j < 4 * m + 1; ++j) {
       if (!is_fence[i][j]) {
-        floodfill(is_fence, i, j, n);
+        floodfill(is_fence, i, j, m);
         ans++;
       }
     }
