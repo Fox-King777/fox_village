@@ -4,9 +4,13 @@
         "-std=c++17",
         "-stdlib=libc++",
     ],
-    "c-cpp-compile-run.cpp-flags": "-std=c++17",
+    "c-cpp-compile-run.cpp-flags": "-std=c++17 -Wall -Wextra",
     "editor.formatOnSave": true,
     "[cpp]": {
         "editor.tabSize": 2,
+    },
+    "files.associations": {
+        "iostream": "cpp",
+        "iosfwd": "cpp"
     },
 }
