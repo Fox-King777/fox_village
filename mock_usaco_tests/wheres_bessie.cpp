@@ -3,14 +3,14 @@
 #include <iostream>
 #include <limits>
 #include <queue>
+#include <set>
+#include <unordered_set>
 #include <utility>
 #include <vector>
-#include <unordered_set>
 
 using namespace std;
 
-bool two_colors(vector<vector<char>>& grid, int st_r, int st_c, int l,
-                int w) {  // check for exactly two colors
+bool two_colors(vector<vector<char>>& grid, int st_r, int st_c, int l, int w) {
   unordered_set<char> colors;
   for (int i = st_r; i < st_r + l; ++i) {
     for (int j = st_c; j < st_c + w; ++j) {
@@ -22,7 +22,6 @@ bool two_colors(vector<vector<char>>& grid, int st_r, int st_c, int l,
 
 void bfs_floodfill(vector<vector<char>>& grid, vector<vector<bool>>& mark2, int st_r, int st_c,
                    int init_r, int init_c, int l, int w, char color) {
-  // cout << color << endl;
   vector<int> dirr = {1, -1, 0, 0};
   vector<int> dirc = {0, 0, 1, -1};
 
@@ -33,8 +32,6 @@ void bfs_floodfill(vector<vector<char>>& grid, vector<vector<bool>>& mark2, int 
   while (!q.empty()) {
     pair<int, int> v = q.front();
     q.pop();
-
-    // cout << v.first << " " << v.second << endl;
 
     for (int i = 0; i < 4; ++i) {
       if (v.first + dirr[i] < st_r + l && v.first + dirr[i] >= st_r &&
@@ -49,8 +46,7 @@ void bfs_floodfill(vector<vector<char>>& grid, vector<vector<bool>>& mark2, int 
   }
 }
 
-bool is_plc(vector<vector<char>>& grid, int st_r, int st_c, int l,
-            int w) {
+bool is_plc(vector<vector<char>>& grid, int st_r, int st_c, int l, int w) {
   char c1 = grid[st_r][st_c];
   int c1_cnt = 0;
   int c2_cnt = 0;
@@ -70,20 +66,29 @@ bool is_plc(vector<vector<char>>& grid, int st_r, int st_c, int l,
     }
   }
 
-  // cout << endl << c1_cnt << " " << c2_cnt << endl;
   return (min(c1_cnt, c2_cnt) == 1 && max(c1_cnt, c2_cnt) > 1);
 }
 
-void mark_area(vector<vector<bool>>& mark, int st_r, int st_c, int l, int w) {
+void mark_area(vector<vector<set<int>>>& mark, int st_r, int st_c, int l, int w, int color_fill) {
   for (int i = st_r; i < st_r + l; ++i) {
     for (int j = st_c; j < st_c + w; ++j) {
-      mark[i][j] = true;
+      mark[i][j].insert(color_fill);
     }
   }
 }
 
+set<int> set_intersect(const set<int>& a, const set<int>& b) {
+  set<int> intersection;
+  for (auto x : a) {
+    if (b.find(x) != b.end()) {
+      intersection.insert(x);
+    }
+  }
+  return intersection;
+}
+
 int main() {
-  ifstream fin("testdata/where's_bessie/3.in", ifstream::in);
+  ifstream fin("testdata/wheres_bessie/3.in", ifstream::in);
 
   int n;
   fin >> n;
@@ -95,17 +100,16 @@ int main() {
     }
   }
 
-  vector<vector<bool>> mark(n, vector<bool>(n, false));
+  vector<vector<set<int>>> mark(n, vector<set<int>>(n));
   int ans = 0;
-  for (int i = 0; i < n; ++i) {        // iterate through rows
-    for (int j = 0; j < n; ++j) {      // iterate through columns
-      for (int l = n - i; l > 0; --l) {    // all lengths possible
-        for (int w = n - j; w > 0; --w) {  // all widths possible
-          if ((!mark[i][j] || !mark[i + l - 1][j + w - 1])) {  // if rectangle in bounds
+  for (int i = 0; i < n; ++i) {
+    for (int j = 0; j < n; ++j) {
+      for (int l = n - i; l > 0; --l) {
+        for (int w = n - j; w > 0; --w) {
+          if (set_intersect(mark[i][j], mark[i + l - 1][j + w - 1]).empty()) {
             if (two_colors(grid, i, j, l, w) && is_plc(grid, i, j, l, w)) {
-                cout << i << " " << j << " " << l << " " << w << endl;
-                ans++;
-                mark_area(mark, i, j, l, w);
+              // cout << i << " " << j << " " << l << " " << w << endl;
+              mark_area(mark, i, j, l, w, ans++);
             }
           }
         }
