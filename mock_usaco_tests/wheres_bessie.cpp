@@ -5,33 +5,19 @@
 #include <queue>
 #include <utility>
 #include <vector>
+#include <unordered_set>
 
 using namespace std;
 
 bool two_colors(vector<vector<char>>& grid, int st_r, int st_c, int l,
                 int w) {  // check for exactly two colors
-  vector<char> colors;
-  colors.push_back('^');
+  unordered_set<char> colors;
   for (int i = st_r; i < st_r + l; ++i) {
     for (int j = st_c; j < st_c + w; ++j) {
-      if (find(colors.begin(), colors.end(), grid[i][j]) == colors.end()) {
-        colors.push_back(grid[i][j]);
-      }
+      colors.insert(grid[i][j]);
     }
   }
-
-  if (colors.size() - 1 == 2) {
-    /*cout << "does work" << endl;
-    for (int i = st_r; i < st_r + l; i++) {
-      for (int j = st_c; j < st_c + w; j++) {
-        cout << grid[i][j] << " ";
-      }
-      cout << endl;
-    }*/
-    return true;
-  }
-  // cout << "doesn't work" << endl;
-  return false;
+  return colors.size() == 2;
 }
 
 void bfs_floodfill(vector<vector<char>>& grid, vector<vector<bool>>& mark2, int st_r, int st_c,
@@ -63,13 +49,13 @@ void bfs_floodfill(vector<vector<char>>& grid, vector<vector<bool>>& mark2, int 
   }
 }
 
-bool is_plc(vector<vector<char>>& grid, vector<vector<bool>>& mark, int st_r, int st_c, int l,
+bool is_plc(vector<vector<char>>& grid, int st_r, int st_c, int l,
             int w) {
   char c1 = grid[st_r][st_c];
   int c1_cnt = 0;
   int c2_cnt = 0;
 
-  vector<vector<bool>> mark2(mark.size(), vector<bool>(mark.size(), false));
+  vector<vector<bool>> mark2(grid.size(), vector<bool>(grid.size(), false));
   for (int i = st_r; i < st_r + l; ++i) {
     for (int j = st_c; j < st_c + w; ++j) {
       if (!mark2[i][j]) {
@@ -85,21 +71,19 @@ bool is_plc(vector<vector<char>>& grid, vector<vector<bool>>& mark, int st_r, in
   }
 
   // cout << endl << c1_cnt << " " << c2_cnt << endl;
-  if (min(c1_cnt, c2_cnt) == 1 && max(c1_cnt, c2_cnt) > 1) {
-    // cout << "is plc" << endl;
-    for (int i = st_r; i < st_r + l; ++i) {
-      for (int j = st_c; j < st_c + w; ++j) {
-        mark[i][j] = true;
-      }
+  return (min(c1_cnt, c2_cnt) == 1 && max(c1_cnt, c2_cnt) > 1);
+}
+
+void mark_area(vector<vector<bool>>& mark, int st_r, int st_c, int l, int w) {
+  for (int i = st_r; i < st_r + l; ++i) {
+    for (int j = st_c; j < st_c + w; ++j) {
+      mark[i][j] = true;
     }
-    return true;
   }
-  // cout << "not plc" << endl;
-  return false;
 }
 
 int main() {
-  ifstream fin("testdata/where's_bessie/1.in", ifstream::in);
+  ifstream fin("testdata/where's_bessie/3.in", ifstream::in);
 
   int n;
   fin >> n;
@@ -115,16 +99,13 @@ int main() {
   int ans = 0;
   for (int i = 0; i < n; ++i) {        // iterate through rows
     for (int j = 0; j < n; ++j) {      // iterate through columns
-      for (int l = n; l > 0; --l) {    // all lengths possible
-        for (int w = n; w > 0; --w) {  // all widths possible
-          if (i + l <= n && j + w <= n &&
-              (!mark[i][j] ||
-               (mark[i][j] && !mark[i + l - 1][j + w - 1]))) {  // if rectangle in bounds
-            // cout << i << " " << j << " " << l << " " << w << endl;
-            if (two_colors(grid, i, j, l, w)) {  // if there are two colors in rectangle
-              if (is_plc(grid, mark, i, j, l, w)) {
+      for (int l = n - i; l > 0; --l) {    // all lengths possible
+        for (int w = n - j; w > 0; --w) {  // all widths possible
+          if ((!mark[i][j] || !mark[i + l - 1][j + w - 1])) {  // if rectangle in bounds
+            if (two_colors(grid, i, j, l, w) && is_plc(grid, i, j, l, w)) {
+                cout << i << " " << j << " " << l << " " << w << endl;
                 ans++;
-              }
+                mark_area(mark, i, j, l, w);
             }
           }
         }
@@ -132,5 +113,5 @@ int main() {
     }
   }
 
-  cout << ans;
+  cout << ans << endl;
 }
