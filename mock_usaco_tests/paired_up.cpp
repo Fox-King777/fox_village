@@ -26,21 +26,22 @@ int main() {
   sort(cows.begin(), cows.end(), cow_cmp);
 
   int ans = numeric_limits<int>::min();
+  int start = 0, end = cows.size() - 1;
   while (m > 0) {
-    if (cows[0].num == 0) {
-      cows.erase(cows.begin());
+    if (cows[start].num == 0) {
+      start++;
     }
-    if (cows[cows.size() - 1].num == 0) {
-      cows.erase(cows.begin() + cows.size() - 1);
-    }
-
-    if (ans < cows[0].val + cows[cows.size() - 1].val) {
-      ans = cows[0].val + cows[cows.size() - 1].val;
+    if (cows[end].num == 0) {
+      end--;
     }
 
-    int minimum = min(cows[0].num, cows[cows.size() - 1].num);
-    cows[0].num -= minimum;
-    cows[cows.size() - 1].num -= minimum;
+    if (ans < cows[start].val + cows[end].val) {
+      ans = cows[start].val + cows[end].val;
+    }
+
+    int minimum = min(cows[start].num, cows[end].num);
+    cows[start].num -= minimum;
+    cows[end].num -= minimum;
     m -= 2 * minimum;
   }
 
