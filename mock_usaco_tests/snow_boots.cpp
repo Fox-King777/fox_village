@@ -8,42 +8,6 @@
 
 using namespace std;
 
-/*long long solve(vector<long long>& tiles, vector<pair<long long, long long>>& boots,
-                int top_boot_idx, long long tile_idx) {
-  if (top_boot_idx > boots.size()) return numeric_limits<long long>::max();
-  if (tile_idx == tiles.size() - 1) return top_boot_idx;
-
-  long long ans = numeric_limits<long long>::max();
-  for (int i = tile_idx + 1;
-       i <= min(tile_idx + boots[top_boot_idx].second, (long long)tiles.size() - 1); ++i) {
-    if (tiles[i] <= boots[top_boot_idx].first && tiles[tile_idx] <= boots[top_boot_idx].first) {
-      ans = min(ans, solve(tiles, boots, top_boot_idx, i));
-    }
-  }
-  ans = min(ans, solve(tiles, boots, top_boot_idx + 1, tile_idx));
-
-  return ans;
-}
-
-int main() {
-  ifstream fin("testdata/snow_boots/1.in", ifstream::in);
-
-  int n, b;
-  fin >> n >> b;
-
-  vector<long long> tiles(n);
-  for (int i = 0; i < n; ++i) {
-    fin >> tiles[i];
-  }
-
-  vector<pair<long long, long long>> boots(b);
-  for (int i = 0; i < b; ++i) {
-    fin >> boots[i].first >> boots[i].second;
-  }
-
-  cout << solve(tiles, boots, 0, 0);
-}*/
-
 int main() {
   ifstream fin("testdata/snow_boots/5.in", ifstream::in);
 
