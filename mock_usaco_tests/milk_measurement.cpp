@@ -16,7 +16,7 @@ struct Measurements {
 bool measurement_cmp(Measurements a, Measurements b) { return a.day < b.day; }
 
 int main() {
-  ifstream fin("testdata/milk_measurement/9.in", ifstream::in);
+  ifstream fin("testdata/milk_measurement/4.in", ifstream::in);
 
   int n;
   long long g;
@@ -36,8 +36,11 @@ int main() {
   sort(m.begin(), m.end(), measurement_cmp);
 
   int ans = 0;
+
   for (int i = 0; i < n; ++i) {
-    set<long long> prev_top(leaderboard.rbegin()->second);
+    bool only_top =
+        cows[m[i].id] == leaderboard.rbegin()->first && leaderboard.rbegin()->second.size() == 1;
+    bool not_top = cows[m[i].id] != leaderboard.rbegin()->first;
 
     leaderboard[cows[m[i].id]].erase(m[i].id);
     if (leaderboard[cows[m[i].id]].empty()) {
@@ -50,8 +53,11 @@ int main() {
     } else {
       leaderboard[cows[m[i].id]].insert(m[i].id);
     }
+    bool still_only_top =
+        cows[m[i].id] == leaderboard.rbegin()->first && leaderboard.rbegin()->second.size() == 1;
+    bool still_not_top = cows[m[i].id] != leaderboard.rbegin()->first;
 
-    if (prev_top != leaderboard.rbegin()->second) {
+    if ((!only_top || !still_only_top) && (!not_top || !still_not_top)) {
       ans++;
     }
   }
