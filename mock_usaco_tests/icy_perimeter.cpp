@@ -90,3 +90,4 @@ int main() {
 
   cout << blobs[0].a << " " << blobs[0].p;
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=895

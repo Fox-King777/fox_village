@@ -54,3 +54,4 @@ int main() {
 
   cout << time - effectiveness[0];
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=786
