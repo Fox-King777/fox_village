@@ -116,3 +116,4 @@ int main() {
   }
   cout << ans - 1 << endl;
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=596

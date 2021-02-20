@@ -11,7 +11,7 @@ struct Path {
 };
 
 int main() {
-  ifstream fin("testdata/grass_planting/1.in", ifstream::in);
+  ifstream fin("testdata/grass_planting/5.in", ifstream::in);
 
   int n;
   fin >> n;
@@ -34,3 +34,4 @@ int main() {
 
   cout << ans + 1 << endl;
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=894

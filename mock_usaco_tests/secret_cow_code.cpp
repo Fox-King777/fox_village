@@ -21,3 +21,4 @@ int main() {
 
   cout << code[n - 1] << endl;
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=692
