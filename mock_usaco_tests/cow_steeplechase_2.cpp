@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <fstream>
 #include <iostream>
+#include <set>
 #include <vector>
 
 using namespace std;
@@ -11,6 +12,7 @@ struct Point {
 
 struct Segment {
   Point p, q;
+  int index;
 };
 
 bool onSegment(Point p, Point q, Point r) {
@@ -58,8 +60,10 @@ bool intersect(Segment a, Segment b) {
   return false;
 }
 
+bool seg_cmp(Segment a, Segment b) { return a.p.x != b.p.x ? a.p.x < b.p.x : a.p.y < b.p.y; }
+
 int main() {
-  ifstream fin("testdata/cow_steeplechase_2/10.in", ifstream::in);
+  ifstream fin("testdata/cow_steeplechase_2/7.in", ifstream::in);
 
   int n;
   fin >> n;
@@ -67,25 +71,38 @@ int main() {
   vector<Segment> segments(n);
   for (int i = 0; i < n; ++i) {
     fin >> segments[i].p.x >> segments[i].p.y >> segments[i].q.x >> segments[i].q.y;
+    segments[i].index = i;
   }
+  sort(segments.begin(), segments.end(), seg_cmp);
 
   vector<int> num_inter(n, 0);
+  set<int> active;
   for (int i = 0; i < n; ++i) {
-    for (int j = i + 1; j < n; ++j) {
-      if (intersect(segments[i], segments[j])) {
-        num_inter[i]++;
-        num_inter[j]++;
-        if (num_inter[i] > 1) {
-          cout << i + 1;
-          return 0;
-        }
-        if (num_inter[j] > 1) {
-          cout << j + 1;
-          return 0;
-        }
-        break;
+    set<int>::iterator it = active.begin();
+    while (it != active.end()) {
+      if (segments[i].p.x > segments[*it].q.x) {
+        active.erase(it);
       }
+      ++it;
     }
+
+    set<int>::iterator it2 = active.begin();
+    while (it2 != active.end()) {
+      if (intersect(segments[i], segments[*it2])) {
+        num_inter[segments[i].index]++;
+        num_inter[segments[*it2].index]++;
+        if (num_inter[segments[i].index] > 1) {
+          cout << segments[i].index + 1;
+          return 0;
+        }
+        if (num_inter[segments[*it2].index] > 1) {
+          cout << segments[*it2].index + 1;
+          return 0;
+        }
+      }
+      ++it2;
+    }
+    active.insert(i);
   }
 
   for (int i = 0; i < n; ++i) {
@@ -95,3 +112,4 @@ int main() {
     }
   }
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=943

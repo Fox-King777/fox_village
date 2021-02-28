@@ -7,8 +7,6 @@
 
 using namespace std;
 
-int find_relevance(vector<vector<int>>& adjacency, int b) { int relevance = 0; }
-
 int main() {
   ifstream fin("testdata/mootube/1.in", ifstream::in);
 
