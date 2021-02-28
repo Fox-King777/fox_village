@@ -76,3 +76,4 @@ int main() {
   }
   cout << ans;
 }
+// http://www.usaco.org/index.php?page=viewproblem2&cpid=944
