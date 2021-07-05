@@ -13,7 +13,7 @@ struct City {
 };
 
 int main() {
-  ifstream fin("testdata/cities_and_states/9.in", ifstream::in);
+  ifstream fin("testdata/cities_and_states/5.in", ifstream::in);
 
   int n;
   fin >> n;

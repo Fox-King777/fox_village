@@ -31,8 +31,8 @@ int main() {
 
   for (int i = 0; i < q; ++i) {
     int ans = 0;
-    for (int j = 0; j < n; ++i) {
-      if (i != questions[i].first - 1) {
+    for (int j = 0; j < n; ++j) {
+      if (j != questions[i].first - 1) {
         if (adjacency[questions[i].first - 1][j] != 0) {
           if (adjacency[questions[i].first - 1][j] >= questions[i].second) {
             ans++;
@@ -40,6 +40,7 @@ int main() {
         }
       }
     }
+    cout << ans << endl;
   }
 }
 // http://www.usaco.org/index.php?page=viewproblem2&cpid=788
