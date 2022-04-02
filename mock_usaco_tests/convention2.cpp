@@ -6,57 +6,55 @@
 
 using namespace std;
 
-struct Cow {
-  int a;
-  int t;
-  int sen;
-
-  // Operator overrides.
-  bool operator<(const Cow& rhs) const { return this->sen > rhs.sen; }
+struct cow {
+  long long a, t, s;
 };
 
-bool cow_cmp(Cow a, Cow b) {
+struct scmp {
+  bool operator()(cow const& a, cow const& b) { return a.s > b.s; }
+};
+
+bool acmp(cow a, cow b) {
   if (a.a != b.a) {
     return a.a < b.a;
   } else {
-    return a.sen < b.sen;
+    return a.s < b.s;
   }
 }
 
 int main() {
-  ifstream fin("testdata/convention2/9.in", ifstream::in);
+  ifstream fin("testdata/convention2/5.in", ifstream::in);
 
   int n;
   fin >> n;
 
-  vector<Cow> cows(n);
+  vector<cow> cows(n);
   for (int i = 0; i < n; ++i) {
     fin >> cows[i].a >> cows[i].t;
-    cows[i].sen = i;
+    cows[i].s = i;
   }
+  sort(cows.begin(), cows.end(), acmp);
 
-  sort(cows.begin(), cows.end(), cow_cmp);
-
-  int k = 0;
-  int time = 0;
-  int ans = 0;
-  priority_queue<Cow> q;
+  long long ans = 0;
+  int index = 0;
+  long long time = 0;
+  priority_queue<cow, vector<cow>, scmp> w;
   for (int i = 0; i < n; ++i) {
-    if (q.empty()) {
-      q.push(cows[k]);
-      time = cows[k].a;
-      k++;
+    if (w.empty()) {
+      w.push(cows[index]);
+      time = cows[index].a;
+      index++;
     }
+    cow ncow = w.top();
+    w.pop();
 
-    Cow cur_cow = q.top();
-    q.pop();
+    ans = max(ans, time - ncow.a);
+    time += ncow.t;
 
-    ans = min(ans, time - cur_cow.a);
-
-    while (k < n && cows[k].a <= time + cur_cow.t) {
-      q.push(cows[k++]);
+    while (index < n && cows[index].a <= time) {
+      w.push(cows[index]);
+      index++;
     }
-    time += cur_cow.t;
   }
 
   cout << ans;
