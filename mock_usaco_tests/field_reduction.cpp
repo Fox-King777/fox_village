@@ -28,7 +28,7 @@ bool is_valid(vector<Point>& cows, int minx, int miny, int maxx, int maxy) {
 }
 
 int main() {
-  ifstream fin("testdata/field_reduction/10.in", ifstream::in);
+  ifstream fin("testdata/field_reduction/1.in", ifstream::in);
 
   int n;
   fin >> n;

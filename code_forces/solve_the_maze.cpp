@@ -14,10 +14,11 @@
 
 using namespace std;
 
-bool floodfill(vector<vector<char>>& grid, vector<vector<bool>>& mark, pair<int, int> spoint) {
+bool floodfill(vector<vector<char>>& grid, pair<int, int> spoint) {
   vector<pair<int, int>> dir = {make_pair(1, 0), make_pair(-1, 0), make_pair(0, 1),
                                 make_pair(0, -1)};
   queue<pair<int, int>> q;
+  vector<vector<bool>> mark(grid.size(), vector<bool>(grid[0].size(), false));
   q.push(spoint);
   mark[spoint.first][spoint.second] = true;
 
@@ -77,8 +78,13 @@ void solve() {
     }
   }
 
-  vector<vector<bool>> mark(grid.size(), vector<bool>(grid[0].size(), false));
-  if (grid[i][j] == '#' ||) cout << "YES" << endl;
+  for (auto s : g) {
+    if (!floodfill(grid, s)) {
+      cout << "NO" << endl;
+      return;
+    }
+  }
+  cout << "YES" << endl;
 }
 
 int main() {

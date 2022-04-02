@@ -33,7 +33,7 @@ bool sim(long long n, long long k, long long m, long long x) {
 }
 
 int main() {
-  ifstream fin("testdata/loan_repayment/10.in", ifstream::in);
+  ifstream fin("testdata/loan_repayment/1.in", ifstream::in);
 
   long long n, k, m;
   fin >> n >> k >> m;
@@ -43,10 +43,10 @@ int main() {
   long long ans = 0;
   while (lo <= hi) {
     long long mid = (lo + hi) / 2;
-
     if (sim(n, k, m, mid)) {
       ans = max(ans, mid);
       lo = mid + 1;
+      cout << mid << endl;
     } else {
       hi = mid - 1;
     }
